@@ -1,0 +1,95 @@
+#include <iostream> using namespace std; #define MAX 100 class MyStack {
+int type[MAX],tos;
+double amount[MAX];
+int undotype[MAX],undotos; double undoamount[MAX]; int redotype[MAX], redotos; double redoamount[MAX]; double balance;
+public: MyStack() {
+tos = -1; undotos = -1; redotos = -1; balance = 0;
+}
+void credit() {
+double amt;
+cout << "Enter amount: "; cin >> amt;
+if (amt <= 0) {
+cout << "Invalid amount!\n";
+return; }
+tos=tos+1;
+type[tos] = 1;
+amount[tos] = amt; undotos++; undotype[undotos] = 1; undoamount[undotos] = amt; redotos = -1;
+🔷
+ balance += amt;
+cout << "Credit added. Balance = " << balance << endl; }
+void debit() {
+double amt;
+cout << "Enter amount: "; cin >> amt;
+if (amt <= 0) {
+cout << "Invalid amount!\n";
+return; }
+tos++;
+type[tos] = 2;
+amount[tos] = amt;
+undotos++;
+undotype[undotos] = 2;
+undoamount[undotos] = amt;
+redotos = -1;
+balance -= amt;
+cout << "Debit added. Balance = " << balance << endl;
+}
+void undo() {
+if (undotos < 0) {
+cout << "Nothing to undo!\n"; return;
+}
+int lastType = undotype[undotos]; double lastAmt = undoamount[undotos]; undotos--;
+redotos++;
+redotype[redotos] = lastType; redoamount[redotos] = lastAmt;
+tos--;
+if (lastType == 1) balance -= lastAmt; else balance += lastAmt;
+
+ cout << "Undo done. Balance = " << balance << endl; }
+void redo() {
+if (redotos < 0) {
+cout << "Nothing to redo!\n";
+return; }
+int lastType1 = redotype[redotos];
+double lastAmt1 = redoamount[redotos]; redotos--;
+tos++;
+type[tos] = lastType1;
+amount[tos] = lastAmt1;
+undotos++;
+undotype[undotos] = lastType1; undoamount[undotos] = lastAmt1;
+if (lastType1 == 1) balance += lastAmt1; else balance -= lastAmt1;
+cout << "Redo done. Balance = " << endl;
+}
+void showRecords() {
+cout << "\n Records Stored in Array \n"; if (tos < 0) {
+cout << "No records.\n";
+return; }
+for (int i = 0; i <= tos; i++) { if (type[i] == 1)
+cout << i+1 << ". Credit: " << amount[i] << endl; else
+cout << i+1 << ". Debit : " << amount[i] << endl; }
+cout << "Total Balance = " << balance << endl; }
+};
+
+int main() { MyStack st; int choice; do {
+cout <<
+cout <<
+cout <<
+cout <<
+cout <<
+cout <<
+cout <<
+cout <<
+cin >> choice; switch (choice) {
+"\n account Information System \n"; "1 Add Credit\n";
+"2 Add Debit\n";
+"3 Undo\n";
+"4 Redo\n";
+"5 Show Records\n"; "6 Exit\n";
+"Enter choice ";
+case 1: st.credit(); break;
+case 2: st.debit(); break;
+case 3: st.undo(); break;
+case 4: st.redo(); break;
+case 5: st.showRecords(); break;
+case 6: cout << "Exiting... Thank you!\n"; break; default: cout << "Invalid choice!\n";
+}
+} while (choice != 6); return 0;
+}
